@@ -7,7 +7,7 @@
 		TableBody
 	} from '$lib/components/ui/table/index.js';
 	import { Avatar } from '$lib/components/ui/avatar/index.js';
-	export let activities = [];
+	export let activities: any[] = [];
 	export let users = [];
 	export let projects = [];
 	export let selectedProject: string | null = null;

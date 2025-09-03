@@ -9,7 +9,13 @@
 		if (message.trim()) {
 			chat = [...chat, { sender: 'You', text: message }];
 			// Here you would call the LLM API and push its response
-			chat = [...chat, { sender: 'LLM', text: 'This is a mock response.' }];
+			chat = [
+				...chat,
+				{
+					sender: 'LLM (mock)',
+					text: 'You have 3 projects in the queue, with a total of 5 tasks. The most urgent task is due tomorrow...'
+				}
+			];
 			message = '';
 		}
 	}

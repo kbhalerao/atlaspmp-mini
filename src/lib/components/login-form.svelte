@@ -32,7 +32,7 @@
 		</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<form method="post" action={action === 'login' ? '?/login' : '?/register'} use:enhance>
+		<form method="post" action={action === 'login' ? '?/login' : '?/register'}>
 			<div class="grid gap-4">
 				<div class="grid gap-2">
 					<Label for="username">Username</Label>
@@ -61,5 +61,6 @@
 			{/if}
 		</div>
 		<p class="mt-2 text-red-600">{form?.message ?? ''}</p>
+		<p class="mt-2 text-xs text-gray-400">[DEBUG] action: {action}, form: {JSON.stringify(form)}</p>
 	</Card.Content>
 </Card.Root>

@@ -139,9 +139,9 @@
 
 <Card.Root class="@container/card">
 	<Card.Header>
-		<Card.Title>Total Visitors</Card.Title>
+		<Card.Title>Project Activity</Card.Title>
 		<Card.Description>
-			<span class="@[540px]/card:block hidden"> Total for the last 3 months </span>
+			<span class="@[540px]/card:block hidden"> Activity for the last 3 months </span>
 			<span class="@[540px]/card:hidden">Last 3 months</span>
 		</Card.Description>
 		<Card.Action>
