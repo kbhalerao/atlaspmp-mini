@@ -5,9 +5,9 @@ import type { Task } from '$lib/server/db/schema';
 type DB = any;
 
 /**
- * Creates a new task. Attaches a default deadline of two weeks from present
+ * Create a new task. If no deadline is provided, sets it to 2 weeks from now. Accepts deadline as Date or timestamp.
  * @param db The database connection.
- * @param params The parameters containing task details.
+ * @param params Object with title, priority, status, deadline, description, llmContext, projectId.
  * @returns The created task.
  */
 export async function createTask(
@@ -38,11 +38,23 @@ export async function createTask(
 	return task;
 }
 
+/**
+ * Fetch a task by its unique ID.
+ * @param db The database connection.
+ * @param params Object with task id.
+ * @returns The task if found, or null.
+ */
 export async function getTaskById(db: DB, params: { id: string }): Promise<Task | null> {
 	const [task] = await db.select().from(table.task).where(eq(table.task.id, params.id));
 	return task ?? null;
 }
 
+/**
+ * Update a task by ID. Only provided fields are updated.
+ * @param db The database connection.
+ * @param params Object with id and fields to update.
+ * @returns The updated task.
+ */
 export async function updateTask(
 	db: DB,
 	params: {

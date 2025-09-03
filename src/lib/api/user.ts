@@ -6,7 +6,7 @@ import { hash } from 'bcryptjs';
 type DB = any;
 
 /**
- * Hashes a password using bcrypt.
+ * Hashes a plaintext password using bcrypt. Use before storing user passwords.
  * @param newPassword The password to hash.
  * @returns The hashed password.
  */
@@ -15,15 +15,32 @@ export async function hashPassword(newPassword: string): Promise<string> {
 	return await hash(newPassword, saltRounds);
 }
 
+/**
+ * Fetch a user by their unique ID.
+ * @param db The database connection.
+ * @param params Object with user id.
+ * @returns The user if found, or null.
+ */
 export async function getUserById(db: DB, params: { id: string }): Promise<User | null> {
 	const [user] = await db.select().from(table.user).where(eq(table.user.id, params.id));
 	return user ?? null;
 }
 
+/**
+ * List all users in the system.
+ * @param db The database connection.
+ * @returns Array of users.
+ */
 export async function listUsers(db: DB): Promise<User[]> {
 	return db.select().from(table.user);
 }
 
+/**
+ * Fetch a user by their unique username.
+ * @param db The database connection.
+ * @param params Object with username.
+ * @returns The user if found, or null.
+ */
 export async function getUserByUsername(
 	db: DB,
 	params: { username: string }
@@ -33,11 +50,10 @@ export async function getUserByUsername(
 }
 
 /**
- * Creates new user. Adds a unique ID and created / modified timestamps.
- * Fails if there is a user with the same username.
- * @param db
- * @param userData
- * @returns
+ * Create a new user. Generates a unique ID and timestamps. Fails if username is not unique.
+ * @param db The database connection.
+ * @param userData Partial user object (must include username and passwordHash).
+ * @returns The created user, or null if creation failed.
  */
 export async function createUser(db: DB, userData: Partial<User>): Promise<User | null> {
 	// Set default values for missing fields
@@ -52,7 +68,10 @@ export async function createUser(db: DB, userData: Partial<User>): Promise<User 
 }
 
 /**
- * Get or Create User
+ * Fetch a user by username, or create if not found.
+ * @param db The database connection.
+ * @param userData Partial user object (must include username).
+ * @returns The found or created user, or null if creation failed.
  */
 export async function getOrCreateUser(db: DB, userData: Partial<User>): Promise<User | null> {
 	if (!userData.username) {

@@ -5,6 +5,12 @@ import { id } from 'zod/v4/locales';
 
 type DB = any;
 
+/**
+ * Log an activity (e.g., comment, status update) for a task.
+ * @param db The database connection.
+ * @param params Object with taskId, userId, action, llmContext, timestamp.
+ * @returns The created task activity.
+ */
 export async function createTaskActivity(
 	db: DB,
 	params: {
@@ -25,6 +31,12 @@ export async function createTaskActivity(
 	return activity;
 }
 
+/**
+ * Fetch a task activity by its unique ID.
+ * @param db The database connection.
+ * @param params Object with activity id.
+ * @returns The activity if found, or null.
+ */
 export async function getTaskActivityById(
 	db: DB,
 	params: { id: string }
@@ -36,7 +48,6 @@ export async function getTaskActivityById(
 	return activity ?? null;
 }
 
-
 /**
  * Lists all activities for a specific task, filter by any combination of userId, projectId or taskId. Ordered by most recently modified first,
  * and paginated by limit and offset.
@@ -44,18 +55,19 @@ export async function getTaskActivityById(
  * @param params The parameters containing the task ID. Accepts userId, projectId, and taskId, limit (default 10) and offset (default 0).
  * @returns A list of task activities.
  */
-
 export async function listTaskActivities(
 	db: DB,
 	params: { taskId?: string; userId?: string; projectId?: string; limit?: number; offset?: number }
 ): Promise<TaskActivity[]> {
-	let query = db.select().from(table.taskActivity)
-		.innerJoin(table.task, eq(table.taskActivity.taskId, table.task.id))
+	let query = db
+		.select()
+		.from(table.taskActivity)
 		.innerJoin(table.user, eq(table.taskActivity.userId, table.user.id))
+		.innerJoin(table.task, eq(table.taskActivity.taskId, table.task.id))
 		.innerJoin(table.project, eq(table.task.projectId, table.project.id))
 		.orderBy(table.taskActivity.updatedAt, 'desc');
 	if (params.taskId) {
-		query = query.where(eq(table.task.id, params.taskId));
+		query = query.where(eq(table.taskActivity.id, params.taskId));
 	}
 	if (params.userId) {
 		query = query.where(eq(table.user.id, params.userId));

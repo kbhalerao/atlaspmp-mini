@@ -4,6 +4,12 @@ import type { Project } from '$lib/server/db/schema';
 
 type DB = any;
 
+/**
+ * Create a new project with the given details. Generates a unique ID and timestamps.
+ * @param db The database connection.
+ * @param params Object with name, description, llmContext, ownerId.
+ * @returns The created project.
+ */
 export async function createProject(
 	db: DB,
 	params: {
@@ -23,11 +29,23 @@ export async function createProject(
 	return project;
 }
 
+/**
+ * Fetch a project by its unique ID.
+ * @param db The database connection.
+ * @param params Object with project id.
+ * @returns The project if found, or null.
+ */
 export async function getProjectById(db: DB, params: { id: string }): Promise<Project | null> {
 	const [project] = await db.select().from(table.project).where(eq(table.project.id, params.id));
 	return project ?? null;
 }
 
+/**
+ * Update a project by ID. Only provided fields are updated.
+ * @param db The database connection.
+ * @param params Object with id and fields to update.
+ * @returns The updated project.
+ */
 export async function updateProject(
 	db: DB,
 	params: {
@@ -47,6 +65,12 @@ export async function updateProject(
 	return project;
 }
 
+/**
+ * Deletes a project by its ID.
+ * @param db The database connection.
+ * @param params The parameters containing the project ID.
+ * @returns A promise that resolves when the project is deleted.
+ */
 export async function deleteProject(db: DB, params: { id: string }): Promise<void> {
 	await db.delete(table.project).where(eq(table.project.id, params.id));
 }
@@ -57,7 +81,10 @@ export async function deleteProject(db: DB, params: { id: string }): Promise<voi
  * @param params The parameters containing the owner ID, with limit (default 10) and offset (default 0)
  * @returns A list of projects.
  */
-export async function listProjects(db: DB, params: { ownerId?: string; limit?: number; offset?: number }): Promise<Project[]> {
+export async function listProjects(
+	db: DB,
+	params: { ownerId?: string; limit?: number; offset?: number }
+): Promise<Project[]> {
 	let query = db.select().from(table.project).orderBy(table.project.updatedAt, 'desc');
 	if (params.ownerId) {
 		query = query.where(eq(table.project.ownerId, params.ownerId));
