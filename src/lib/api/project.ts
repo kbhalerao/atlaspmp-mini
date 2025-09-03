@@ -13,7 +13,13 @@ export async function createProject(
 		ownerId: string;
 	}
 ): Promise<Project> {
-	const [project] = await db.insert(table.project).values(params).returning();
+	const newProject: Project = {
+		id: crypto.randomUUID(),
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		...params
+	};
+	const [project] = await db.insert(table.project).values(newProject).returning();
 	return project;
 }
 
@@ -45,9 +51,16 @@ export async function deleteProject(db: DB, params: { id: string }): Promise<voi
 	await db.delete(table.project).where(eq(table.project.id, params.id));
 }
 
-export async function listProjects(db: DB, params: { ownerId?: string }): Promise<Project[]> {
+/**
+ * Lists projects for a specific user (optional), and ordered by updatedAt descending
+ * @param db The database connection.
+ * @param params The parameters containing the owner ID, with limit (default 10) and offset (default 0)
+ * @returns A list of projects.
+ */
+export async function listProjects(db: DB, params: { ownerId?: string; limit?: number; offset?: number }): Promise<Project[]> {
+	let query = db.select().from(table.project).orderBy(table.project.updatedAt, 'desc');
 	if (params.ownerId) {
-		return db.select().from(table.project).where(eq(table.project.ownerId, params.ownerId));
+		query = query.where(eq(table.project.ownerId, params.ownerId));
 	}
-	return db.select().from(table.project);
+	return query.limit(params.limit ?? 10).offset(params.offset ?? 0);
 }

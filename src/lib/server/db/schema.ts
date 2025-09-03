@@ -1,47 +1,57 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 
 /**
+ * NOTE - Application code is responsible for setting unique IDs and timestamps when
+ * creating and updating records.
+ */
+
+/**
  * Represents a user in the system.
  */
 export const user = sqliteTable('user', {
-	id: text('id').primaryKey(),
-	age: integer('age'),
+	id: text('id').primaryKey().notNull(),
 	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull()
+	passwordHash: text('password_hash').notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 /**
  * Represents a user session in the system.
  */
 export const session = sqliteTable('session', {
-	id: text('id').primaryKey(),
+	id: text('id').primaryKey().notNull(),
 	userId: text('user_id')
 		.notNull()
 		.references(() => user.id),
-	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
+	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 /**
  * Represents a project in the system.
  */
 export const project = sqliteTable('project', {
-	id: text('id').primaryKey(),
+	id: text('id').primaryKey().notNull(),
 	name: text('name').notNull(),
 	description: text('description').notNull(),
 	llmContext: text('llm_context').notNull(),
 	ownerId: text('owner_id')
 		.notNull()
-		.references(() => user.id)
+		.references(() => user.id),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 /**
  * Represents tasks associated with a Project.
  */
 export const task = sqliteTable('task', {
-	id: text('id').primaryKey(),
+	id: text('id').primaryKey().notNull(),
 	title: text('title').notNull(),
-	priority: integer('priority').notNull().default(2), // 1 = high, 2 = medium, 3 = low
-	status: text('status').notNull().default('todo'), // e.g., "todo", "in_progress", "done"
+	priority: integer('priority').notNull().default(2),
+	status: text('status').notNull().default('todo'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 	deadline: integer('deadline', { mode: 'timestamp' }).notNull(),
@@ -57,13 +67,15 @@ export const task = sqliteTable('task', {
  * Each row means taskId depends on dependsOnTaskId.
  */
 export const taskDependency = sqliteTable('task_dependency', {
-	id: text('id').primaryKey(),
+	id: text('id').primaryKey().notNull(),
 	taskId: text('task_id')
 		.notNull()
 		.references(() => task.id),
 	dependsOnTaskId: text('depends_on_task_id')
 		.notNull()
-		.references(() => task.id)
+		.references(() => task.id),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 /**
@@ -72,26 +84,30 @@ export const taskDependency = sqliteTable('task_dependency', {
  * can be assigned tasks within the project.
  */
 export const projectAssignee = sqliteTable('project_assignee', {
-	id: text('id').primaryKey(),
+	id: text('id').primaryKey().notNull(),
 	projectId: text('project_id')
 		.notNull()
 		.references(() => project.id),
 	userId: text('user_id')
 		.notNull()
-		.references(() => user.id)
+		.references(() => user.id),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 /**
  * Represents users assigned to a Task.
  */
 export const taskAssignee = sqliteTable('task_assignee', {
-	id: text('id').primaryKey(),
+	id: text('id').primaryKey().notNull(),
 	taskId: text('task_id')
 		.notNull()
 		.references(() => task.id),
 	userId: text('user_id')
 		.notNull()
-		.references(() => user.id)
+		.references(() => user.id),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 /**
@@ -99,16 +115,17 @@ export const taskAssignee = sqliteTable('task_assignee', {
  * This includes comments, status updates, and other interactions.
  */
 export const taskActivity = sqliteTable('task_activity', {
-	id: text('id').primaryKey(),
+	id: text('id').primaryKey().notNull(),
 	taskId: text('task_id')
 		.notNull()
 		.references(() => task.id),
 	userId: text('user_id')
 		.notNull()
 		.references(() => user.id),
-	action: text('action').notNull(), // e.g., "commented", "updated_status"
+	action: text('action').notNull(),
 	llmContext: text('llm_context').notNull(),
-	timestamp: integer('timestamp', { mode: 'timestamp' }).notNull()
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 export type Session = typeof session.$inferSelect;

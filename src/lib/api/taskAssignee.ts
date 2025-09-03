@@ -8,7 +8,13 @@ export async function addTaskAssignee(
 	db: DB,
 	params: { taskId: string; userId: string }
 ): Promise<TaskAssignee> {
-	const [assignee] = await db.insert(table.taskAssignee).values(params).returning();
+	const newAssignee: TaskAssignee = {
+		id: crypto.randomUUID(),
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		...params
+	};
+	const [assignee] = await db.insert(table.taskAssignee).values(newAssignee).returning();
 	return assignee;
 }
 

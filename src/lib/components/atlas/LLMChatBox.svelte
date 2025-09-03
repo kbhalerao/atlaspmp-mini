@@ -21,7 +21,7 @@
 	}
 </script>
 
-<div class="flex h-64 flex-col rounded-lg bg-white p-4 shadow">
+<div class="flex h-96 flex-col rounded-lg bg-white p-4 shadow">
 	<div class="mb-2 flex-1 overflow-y-auto">
 		{#each chat as c}
 			<div class="mb-1"><b>{c.sender}:</b> {c.text}</div>

@@ -8,7 +8,13 @@ export async function addTaskDependency(
 	db: DB,
 	params: { taskId: string; dependsOnTaskId: string }
 ): Promise<TaskDependency> {
-	const [dep] = await db.insert(table.taskDependency).values(params).returning();
+	const newDependency = {
+		id: crypto.randomUUID(),
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		...params
+	} as TaskDependency;
+	const [dep] = await db.insert(table.taskDependency).values(newDependency).returning();
 	return dep;
 }
 

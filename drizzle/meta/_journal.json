@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1756919193772,
+      "tag": "0000_condemned_layla_miller",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1756919607271,
+      "tag": "0001_normal_johnny_storm",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1756919904649,
+      "tag": "0002_acoustic_gabe_jones",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1756920302117,
+      "tag": "0003_burly_magdalene",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1756935845749,
+      "tag": "0004_kind_ricochet",
+      "breakpoints": true
+    }
+  ]
+}
