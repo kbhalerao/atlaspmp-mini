@@ -1,3 +1,5 @@
+import type { AiTextGenerationToolInputWithFunction } from '@cloudflare/ai-utils';
+
 export * from './project';
 export * from './task';
 export * from './taskDependency';
@@ -45,3 +47,10 @@ export type AtlasDBAPIResponseBody = {
 		code: number;
 	};
 };
+
+export type DB = any; // Replace with actual DB type from Drizzle ORM
+/**
+ * A function that takes a database connection and returns a
+ * function that returns an AI function-calling tool.
+ */
+export type ToolCreateFunction = (db: DB) => (params: any) => AiTextGenerationToolInputWithFunction;

@@ -1,0 +1,37 @@
+{
+	"name": "atlas-pmp-mini",
+	"account_id": "c65af8faf0b0021f5ca1ba5da2beff78",
+	"main": "./.cloudflare/worker.js",
+	"build": {
+		"command": "pnpm run build"
+	},
+	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2024-09-23",
+	"assets": {
+		"directory": "./public",
+		"binding": "ASSETS"
+	},
+	"env": {
+		"dev": {
+			"vars": {
+				"NODE_ENV": "development"
+			}
+		},
+		"production": {
+			"vars": {
+				"NODE_ENV": "production"
+			},
+			"d1_databases": [
+				{
+					"binding": "D1",
+					"database_name": "atlas-d1",
+					"database_id": "28405ef9-6750-4d6c-a49b-63b75aafed72",
+					"migrations_dir": "drizzle/migrations"
+				}
+			],
+			"ai": {
+				"binding": "AI"
+			}
+		}
+	}
+}

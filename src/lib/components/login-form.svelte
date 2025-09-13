@@ -54,10 +54,12 @@
 		<div class="mt-4 text-center text-sm">
 			{#if action === 'login'}
 				Don't have an account?
-				<a href="#" class="underline" on:click|preventDefault={switchToRegister}> Sign up </a>
+				<a href="#register" class="underline" on:click|preventDefault={switchToRegister}>
+					Sign up
+				</a>
 			{:else}
 				Already have an account?
-				<a href="#" class="underline" on:click|preventDefault={switchToLogin}> Login </a>
+				<a href="#login" class="underline" on:click|preventDefault={switchToLogin}> Login </a>
 			{/if}
 		</div>
 		<p class="mt-2 text-red-600">{form?.message ?? ''}</p>

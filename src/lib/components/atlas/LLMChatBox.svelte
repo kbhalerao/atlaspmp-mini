@@ -1,30 +1,34 @@
 <script lang="ts">
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	export let selectedProject: string | null = null;
 	let message = '';
-	let chat: { sender: string; text: string }[] = [
-		{ sender: 'LLM', text: 'Hello! How can I help you with your projects today?' }
-	];
+	type ChatMessage = { role: string; content: string };
+
+	let conversation: ChatMessage[] = [];
 	function send() {
-		if (message.trim()) {
-			chat = [...chat, { sender: 'You', text: message }];
-			// Here you would call the LLM API and push its response
-			chat = [
-				...chat,
-				{
-					sender: 'LLM (mock)',
-					text: 'You have 3 projects in the queue, with a total of 5 tasks. The most urgent task is due tomorrow...'
+		if (message.trim() === '') return;
+		conversation = [...conversation, { role: 'user', content: message }];
+		message = '';
+		// Call the LLM API with the updated conversation
+		fetch('/ai', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ conversation })
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log('LLM Response:', data);
+				if (data.response) {
+					conversation = [...conversation, { role: 'atlas', content: data.response }];
 				}
-			];
-			message = '';
-		}
+			})
+			.catch((err) => console.error('Error:', err));
 	}
 </script>
 
 <div class="flex h-96 flex-col rounded-lg bg-white p-4 shadow">
 	<div class="mb-2 flex-1 overflow-y-auto">
-		{#each chat as c}
-			<div class="mb-1"><b>{c.sender}:</b> {c.text}</div>
+		{#each conversation as c}
+			<div class="mb-1"><b>{c.role}:</b> {c.content}</div>
 		{/each}
 	</div>
 	<div class="flex gap-2">
@@ -34,6 +38,6 @@
 			rows={2}
 			placeholder="Ask the LLM about your projects..."
 		/>
-		<button class="rounded bg-blue-600 px-3 py-1 text-white" on:click={send}>Send</button>
+		<button class="rounded bg-blue-600 px-3 py-1 text-white" onclick={send}>Send</button>
 	</div>
 </div>

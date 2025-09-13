@@ -7,14 +7,14 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import type { AtlasDBAPIRequestBody, AtlasDBAPIResponseBody } from '$lib/api/atlas';
 import * as AtlasAPI from '$lib/api/atlas';
-import { db as drizzleDb } from '$lib/server/db/index';
-
+import { get_db } from '$lib/server/db';
 // @ts-ignore: Cloudflare AI binding will be available in the environment
 export const POST: RequestHandler = async ({ request, platform }) => {
 	// Use drizzle ORM for local dev, fallback to Cloudflare binding if present
-	let db: any = drizzleDb;
+	let db = get_db();
 	// @ts-ignore
 	if (platform?.env?.DB) {
+		// @ts-ignore
 		db = platform.env.DB;
 	}
 

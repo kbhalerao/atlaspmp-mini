@@ -1,1 +1,0 @@
-ALTER TABLE `task_activity` DROP COLUMN `timestamp`;
